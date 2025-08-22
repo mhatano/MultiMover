@@ -19,7 +19,7 @@ public class MultiMover {
         String simpleClassName = null;
         String fullClassName = null;
 
-        if (args.length >= 2) {
+        if (args.length >= 1) {
             for ( String arg : args ) {
                 if ( arg.equals("-d") || arg.equals("--dryrun") ) {
                     dryRun = true;
@@ -53,34 +53,32 @@ public class MultiMover {
                 simpleClassName = theClass.getSimpleName();
                 fullClassName   = theClass.getName();
             }
-
-            if ( args.length < 2 || srcPattern == null || dstPattern == null ) {
-                System.out.printf("Usage: java %s  [-d|--dryrun] [-v|--verbose] <srcPattern> <dstPattern>\n",fullClassName);
-                System.exit(1);
-            } else if ( helpMessage ) {
-                System.out.printf("Usage: java %s%s [options] <source-pattern> <destination-pattern>\n",(simpleClassName.equals(fullClassName))?"-jar ":"",fullClassName);
-                System.out.println("Options:");
-                System.out.println("  -d, --dryrun     : Do not actually rename files, just show what would be done.");
-                System.out.println("  -v, --verbose   : Show verbose output.");
-                System.out.println("  -h, --help       : Show this help message.");
-                System.out.println("Source and destination patterns can use %n{pattern} to match and replace parts of filenames.");
-                if ( verbose ) {
-                    System.out.println("Example: " + theClass.getSimpleName() + " \"file-%n{\\d+}.txt\" \"newfile-%n{\\d+}.txt\"");
-                    System.out.println("This will rename files like 'file-123.txt' to 'newfile-123.txt'.");
-                    System.out.println("The %n{pattern} syntax allows you to specify a regex pattern to match parts of the filename.");
-                    System.out.println("The destination pattern can use %1, %2, ... to reference the captured groups from the source pattern.");
-                    System.out.println("Example: " + theClass.getSimpleName() + " \"file-(\\d+).txt\" \"renamed-file-%1.txt\"");
-                    System.out.println("This will rename 'file-123.txt' to 'renamed-file-123.txt'.");
-                    System.out.println("If the source pattern does not match any files, it will print a message and exit.");
-                    System.out.println("If the destination pattern is not valid, it will print an error message and exit.");
-                    System.out.println("If the source pattern is not valid, it will print an error message and exit.");
-                    System.out.println("If the destination pattern is not valid, it will print an error message and exit.");
-                    System.out.println("If the source pattern is not valid, it will print an error message and exit.");
-                }
-                System.exit(1);
-            }
         } else {
             System.out.println("Cannot detect running directory and executable class name or filename.");
+        }
+
+        if ( helpMessage ) {
+            System.out.printf( "Usage: java %s%s [options] <source-pattern> <destination-pattern>\n",(simpleClassName.equals(fullClassName))?"-jar ":"",fullClassName);
+            System.out.println("Options:");
+            System.out.println("  -d, --dryrun \t: Do not actually rename files, just show what would be done.");
+            System.out.println("  -v, --verbose\t: Show verbose output.");
+            System.out.println("  -h, --help   \t: Show this help message.");
+            System.out.println("Source patterns can use %<n>{pattern} to match and destination pattern can use %<n> which are parts of filenames specified in the source pattern.");
+            if ( verbose ) {
+                System.out.printf("\nExample: java %s%s 'file-%%1{\\d+}.txt' 'renamed-file-%%1.txt'\n",(simpleClassName.equals(fullClassName))?"-jar ":"",fullClassName);
+                System.out.println("\t* This will rename files like 'file-123.txt' to 'renamed-file-123.txt'.");
+                System.out.println("\t* The %<n>{pattern} syntax allows you to specify a regex pattern to match parts of the filename.");
+                System.out.println("\t* The destination pattern can use %1, %2, ... to reference the captured groups from the source pattern.");
+                System.out.println("\t* If the source pattern does not match any files, it will print a message and exit.");
+                System.out.println("\t* If the source pattern is not valid, it will print an error message and exit.");
+                System.out.println("\t* If the destination pattern is not valid, it will print an error message and exit.");
+                System.out.println("\t* If the option '--dryrun' (or '-d') is given, it will show the list of candidate of renaming actions,");
+                System.out.println("\t  so you can check the behavior and correctness of patterns before it actually renames.");
+            }
+            System.exit(1);
+        } else if ( args.length < 2 || srcPattern == null || dstPattern == null ) {
+            System.out.printf("Usage: java %s  [-d|--dryrun] [-v|--verbose] [-h|--help] <srcPattern> <dstPattern>\n",fullClassName);
+            System.exit(1);
         }
 
         // Extracting %n{pattern}
