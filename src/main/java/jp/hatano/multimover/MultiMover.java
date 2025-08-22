@@ -54,7 +54,12 @@ public class MultiMover {
                 fullClassName   = theClass.getName();
             }
         } else {
-            System.out.println("Cannot detect running directory and executable class name or filename.");
+            String message = "Cannot detect running directory and executable class name or filename.";
+            if ( verbose ) {
+                System.out.println(message);
+            } else {
+                System.err.println(message);
+            }
         }
 
         if ( helpMessage ) {
@@ -116,8 +121,19 @@ public class MultiMover {
                                 System.out.printf("%s: Renamed %s -> %s\n",simpleClassName,f.getName(),newName);
                             }
                         } else {
+                            String errReason = "";
+                            if ( newFile.exists() ) {
+                                errReason = "Destination file already exists.";
+                            } else if ( !newFile.canWrite() ) {
+                                errReason = "Directory is read-only.";
+                            } else {
+                                errReason = "Some reason, which this time is not tracked down.";
+                            }
+                            String message = "%s : Failed to rename: %s -> %s (%s)\n".formatted(simpleClassName,f.getName(),newName,errReason);
                             if ( verbose ) {
-                                System.out.printf("%s : Failed to rename: %s\n",simpleClassName,f.getName());
+                                System.out.print(message);
+                            } else {
+                                System.err.print(message);
                             }
                         }
                     }
@@ -126,7 +142,12 @@ public class MultiMover {
             }
         }
         if ( !matched ) {
-            System.out.printf("%s : Found no match to pattern: %s\n",simpleClassName,srcPattern);
+            String message = "%s : Found no match to pattern: %s\n".formatted(simpleClassName,srcPattern);
+            if ( verbose ) {
+                System.out.print(message);
+            } else {
+                System.err.print(message);
+            }
         }
     }
 }
