@@ -11,37 +11,25 @@ public class MultiMover {
         new MultiMover(args);
     }
 
+    boolean dryRun = false;
+    boolean verbose = false;
+    boolean helpMessage = false;
+    String srcPattern = null;
+    String dstPattern = null;
+    Class<?> theClass = this.getClass();
+    URL location = theClass.getProtectionDomain().getCodeSource().getLocation();
+    String simpleClassName = null;
+    String fullClassName = null;
+    
     public MultiMover(String[] args) throws URISyntaxException {
-        boolean dryRun = false;
-        boolean verbose = false;
-        boolean helpMessage = false;
-        String srcPattern = null;
-        String dstPattern = null;
-        Class<?> theClass = this.getClass();
-        URL location = theClass.getProtectionDomain().getCodeSource().getLocation();
-        String simpleClassName = null;
-        String fullClassName = null;
-
-        if (args.length >= 1) {
-            for ( String arg : args ) {
-                if ( arg.equals("-d") || arg.equals("--dryrun") ) {
-                    dryRun = true;
-                } else if ( arg.equals("-v") || arg.equals("--verbose") ) {
-                    verbose = true;
-                } else if ( arg.equals("-h") || arg.equals("--help") ) {
-                    helpMessage = true;
-                } else if ( arg.startsWith("-") ) {
-                    System.out.printf("%s : Error. Unknown Option '%s'\n",simpleClassName,arg);
-                    System.exit(1);
-                } else if ( srcPattern == null ) {
-                    srcPattern = arg;
-                } else if ( dstPattern == null ) {
-                    dstPattern = arg;
-                }
+        if ( location == null ) {
+            String message = "Cannot detect running directory and executable class name or filename.";
+            if ( verbose ) {
+                System.out.println(message);
+            } else {
+                System.err.println(message);
             }
-        }
-
-        if ( location != null ) {
+        } else {
             String jarPath = location.getPath();
             if ( jarPath.endsWith(".jar") ) {
                 if ( verbose ) {
@@ -56,13 +44,10 @@ public class MultiMover {
                 simpleClassName = theClass.getSimpleName();
                 fullClassName   = theClass.getName();
             }
-        } else {
-            String message = "Cannot detect running directory and executable class name or filename.";
-            if ( verbose ) {
-                System.out.println(message);
-            } else {
-                System.err.println(message);
-            }
+        }
+
+        if (args.length >= 1) {
+            analyzeArgs(args);
         }
 
         if ( helpMessage ) {
@@ -107,20 +92,7 @@ public class MultiMover {
                                 System.out.printf("%s: Renamed %s -> %s\n",simpleClassName,f.getName(),newName);
                             }
                         } else {
-                            String errReason = "";
-                            if ( newFile.exists() ) {
-                                errReason = "Destination file already exists.";
-                            } else if ( !newFile.canWrite() ) {
-                                errReason = "Directory is read-only.";
-                            } else {
-                                errReason = "Some reason, which this time is not tracked down.";
-                            }
-                            String message = "%s : Failed to rename: %s -> %s (%s)\n".formatted(simpleClassName,f.getName(),newName,errReason);
-                            if ( verbose ) {
-                                System.out.print(message);
-                            } else {
-                                System.err.print(message);
-                            }
+                            failedToRenam(f, newName, newFile);
                         }
                     }
                     matched = true;
@@ -133,6 +105,42 @@ public class MultiMover {
                 System.out.print(message);
             } else {
                 System.err.print(message);
+            }
+        }
+    }
+
+    private void failedToRenam(File f, String newName, File newFile) {
+        String errReason = "";
+        if ( newFile.exists() ) {
+            errReason = "Destination file already exists.";
+        } else if ( !newFile.canWrite() ) {
+            errReason = "Directory is read-only.";
+        } else {
+            errReason = "Some reason, which this time is not tracked down.";
+        }
+        String message = "%s : Failed to rename: %s -> %s (%s)\n".formatted(simpleClassName,f.getName(),newName,errReason);
+        if ( verbose ) {
+            System.out.print(message);
+        } else {
+            System.err.print(message);
+        }
+    }
+
+    private void analyzeArgs(String[] args) {
+        for ( String arg : args ) {
+            if ( arg.equals("-d") || arg.equals("--dryrun") ) {
+                dryRun = true;
+            } else if ( arg.equals("-v") || arg.equals("--verbose") ) {
+                verbose = true;
+            } else if ( arg.equals("-h") || arg.equals("--help") ) {
+                helpMessage = true;
+            } else if ( arg.startsWith("-") ) {
+                System.out.printf("%s : Error. Unknown Option '%s'\n",simpleClassName,arg);
+                System.exit(1);
+            } else if ( srcPattern == null ) {
+                srcPattern = arg;
+            } else if ( dstPattern == null ) {
+                dstPattern = arg;
             }
         }
     }
