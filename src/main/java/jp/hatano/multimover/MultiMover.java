@@ -92,7 +92,7 @@ public class MultiMover {
                                 System.out.printf("%s: Renamed %s -> %s\n",simpleClassName,f.getName(),newName);
                             }
                         } else {
-                            failedToRenam(f, newName, newFile);
+                            failedToRename(f, newName, newFile);
                         }
                     }
                     matched = true;
@@ -109,7 +109,7 @@ public class MultiMover {
         }
     }
 
-    private void failedToRenam(File f, String newName, File newFile) {
+    private void failedToRename(File f, String newName, File newFile) {
         String errReason = "";
         if ( newFile.exists() ) {
             errReason = "Destination file already exists.";
