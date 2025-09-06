@@ -8,9 +8,11 @@ import java.util.regex.Pattern;
 
 public class MultiMover {
     public static void main(String[] args) throws URISyntaxException {
-        new MultiMover(args);
+        MultiMover main = new MultiMover(args);
+        main.start();
     }
-        
+
+    private final String[] args;
     private boolean dryRun = false;
     private boolean verbose = false;
     private boolean helpMessage = false;
@@ -23,7 +25,11 @@ public class MultiMover {
     private String simpleClassName = null;
     private String fullClassName = null;
     
-    public MultiMover(String[] args) throws URISyntaxException {
+    public MultiMover(String[] args) {
+        this.args = args;
+    }
+
+    public void start() throws URISyntaxException {
         if ( location == null ) {
             String message = "Cannot detect running directory and executable class name or filename.";
             if ( verbose ) {
