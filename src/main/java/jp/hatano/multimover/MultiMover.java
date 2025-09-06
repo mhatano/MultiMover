@@ -209,7 +209,6 @@ public class MultiMover {
             System.out.println("\t* This will move files like 'file-123.txt' in sourcedir to 'renamed-file-123.txt' in targetdir.");
             System.out.println("\t* The %<n>{pattern} syntax allows you to specify a regex pattern to match parts of the filename.");
             System.out.println("\t* The destination pattern can use %1, %2, ... to reference the captured groups from the source pattern.");
-            System.out.println("\t* If the source pattern does not match any files, it will print a message and exit.");
             System.out.println("\t* If the source pattern is not valid, it will print an error message and exit.");
             System.out.println("\t* If the destination pattern is not valid, it will print an error message and exit.");
             System.out.println("\t* If the option '--dryrun' (or '-d') is given, it will show the list of candidate move actions,");
