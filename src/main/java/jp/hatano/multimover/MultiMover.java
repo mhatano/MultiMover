@@ -99,20 +99,6 @@ public class MultiMover {
                             }
                         } else {
                             failedToRename(f, newName, newFile);
-                            String errReason = "";
-                            if ( newFile.exists() ) {
-                                errReason = "Destination file already exists.";
-                            } else if ( !newFile.canWrite() ) {
-                                errReason = "Directory is read-only.";
-                            } else {
-                                errReason = "Some reason, which this time is not tracked down.";
-                            }
-                            String message = "%s : Failed to move: %s -> %s (%s)\n".formatted(simpleClassName,f.getPath(),newFile.getPath(),errReason);
-                            if ( verbose ) {
-                                System.out.print(message);
-                            } else {
-                                System.err.print(message);
-                            }
                         }
                     }
                     matched = true;
@@ -139,7 +125,7 @@ public class MultiMover {
         } else {
             errReason = "Some reason, which this time is not tracked down.";
         }
-        String message = "%s : Failed to rename: %s -> %s (%s)\n".formatted(simpleClassName,f.getName(),newName,errReason);
+        String message = "%s : Failed to move: %s -> %s (%s)\n".formatted(simpleClassName,f.getPath(),newFile.getPath(),errReason);
         if ( verbose ) {
             System.out.print(message);
         } else {
