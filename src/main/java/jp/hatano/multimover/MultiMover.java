@@ -57,7 +57,6 @@ public class MultiMover {
             showHelp(verbose, simpleClassName, fullClassName);
         } else if ( args.length < 2 || srcPattern == null || dstPattern == null ) {
             System.out.printf("Usage: java %s%s [options] <source-pattern> <destination-pattern>\n",(simpleClassName.equals(fullClassName))?"-jar ":"",fullClassName);
-            System.out.printf("Usage: java %s%s [options] <source-pattern> <destination-pattern>\n",(simpleClassName.equals(fullClassName))?"-jar ":"",fullClassName);
             System.exit(1);
         }
         
@@ -93,11 +92,9 @@ public class MultiMover {
                     File newFile = new File(targetDir, newName);
                     if ( dryRun ) {
                         System.out.printf("%s : Would move: %s -> %s\n",simpleClassName,f.getPath(),newFile.getPath());
-                        System.out.printf("%s : Would move: %s -> %s\n",simpleClassName,f.getPath(),newFile.getPath());
                     } else {
                         if ( f.renameTo(newFile) ) {
                             if ( verbose ) {
-                                System.out.printf("%s: Moved %s -> %s\n",simpleClassName,f.getPath(),newFile.getPath());
                                 System.out.printf("%s: Moved %s -> %s\n",simpleClassName,f.getPath(),newFile.getPath());
                             }
                         } else {
