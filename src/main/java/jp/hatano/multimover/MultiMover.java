@@ -196,23 +196,14 @@ public class MultiMover {
         System.out.println("  -h, --help       \t: Show this help message.");
         System.out.println("  -s, --sourcedir  \t: Source directory to search for files (default: current directory).");
         System.out.println("  -t, --targetdir  \t: Target directory to move files to (default: current directory).");
-        System.out.println("  -d, --dryrun     \t: Do not actually move files, just show what would be done.");
-        System.out.println("  -v, --verbose    \t: Show verbose output.");
-        System.out.println("  -h, --help       \t: Show this help message.");
-        System.out.println("  -s, --sourcedir  \t: Source directory to search for files (default: current directory).");
-        System.out.println("  -t, --targetdir  \t: Target directory to move files to (default: current directory).");
         System.out.println("Source patterns can use %<n>{pattern} to match and destination pattern can use %<n> which are parts of filenames specified in the source pattern.");
         if ( verbose ) {
-            System.out.printf("\nExample: java %s%s -s sourcedir -t targetdir 'file-%%1{\\d+}.txt' 'renamed-file-%%1.txt'\n",(simpleClassName.equals(fullClassName))?"-jar ":"",fullClassName);
-            System.out.println("\t* This will move files like 'file-123.txt' in sourcedir to 'renamed-file-123.txt' in targetdir.");
             System.out.printf("\nExample: java %s%s -s sourcedir -t targetdir 'file-%%1{\\d+}.txt' 'renamed-file-%%1.txt'\n",(simpleClassName.equals(fullClassName))?"-jar ":"",fullClassName);
             System.out.println("\t* This will move files like 'file-123.txt' in sourcedir to 'renamed-file-123.txt' in targetdir.");
             System.out.println("\t* The %<n>{pattern} syntax allows you to specify a regex pattern to match parts of the filename.");
             System.out.println("\t* The destination pattern can use %1, %2, ... to reference the captured groups from the source pattern.");
             System.out.println("\t* If the source pattern is not valid, it will print an error message and exit.");
             System.out.println("\t* If the destination pattern is not valid, it will print an error message and exit.");
-            System.out.println("\t* If the option '--dryrun' (or '-d') is given, it will show the list of candidate move actions,");
-            System.out.println("\t  so you can check the behavior and correctness of patterns before it actually moves files.");
             System.out.println("\t* If the option '--dryrun' (or '-d') is given, it will show the list of candidate move actions,");
             System.out.println("\t  so you can check the behavior and correctness of patterns before it actually moves files.");
         }
