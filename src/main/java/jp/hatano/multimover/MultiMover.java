@@ -10,7 +10,7 @@ public class MultiMover {
     public static void main(String[] args) throws URISyntaxException {
         new MultiMover(args);
     }
-    
+        
     private boolean dryRun = false;
     private boolean verbose = false;
     private boolean helpMessage = false;
@@ -49,53 +49,23 @@ public class MultiMover {
         }
         
         if (args.length >= 1) {
-            for (int i = 0; i < args.length; i++) {
-                String arg = args[i];
-                if (arg.equals("-d") || arg.equals("--dryrun")) {
-                    dryRun = true;
-                } else if (arg.equals("-v") || arg.equals("--verbose")) {
-                    verbose = true;
-                } else if (arg.equals("-h") || arg.equals("--help")) {
-                    helpMessage = true;
-                } else if (arg.equals("-s") || arg.equals("--sourcedir")) {
-                    if (i + 1 < args.length) {
-                        sourceDir = args[++i];
-                    } else {
-                        System.out.printf("%s : Error. Option '%s' requires an argument.\n", simpleClassName, arg);
-                        System.exit(1);
-                    }
-                } else if (arg.equals("-t") || arg.equals("--targetdir")) {
-                    if (i + 1 < args.length) {
-                        targetDir = args[++i];
-                    } else {
-                        System.out.printf("%s : Error. Option '%s' requires an argument.\n", simpleClassName, arg);
-                        System.exit(1);
-                    }
-                } else if (arg.startsWith("-")) {
-                    System.out.printf("%s : Error. Unknown Option '%s'\n", simpleClassName, arg);
-                    System.exit(1);
-                } else if (srcPattern == null) {
-                    srcPattern = arg;
-                } else if (dstPattern == null) {
-                    dstPattern = arg;
-                }
-            }
-        }
-        
-        if (args.length >= 1) {
             analyzeArgs(args);
         }
+        
         
         if ( helpMessage ) {
             showHelp(verbose, simpleClassName, fullClassName);
         } else if ( args.length < 2 || srcPattern == null || dstPattern == null ) {
             System.out.printf("Usage: java %s%s [options] <source-pattern> <destination-pattern>\n",(simpleClassName.equals(fullClassName))?"-jar ":"",fullClassName);
+            System.out.printf("Usage: java %s%s [options] <source-pattern> <destination-pattern>\n",(simpleClassName.equals(fullClassName))?"-jar ":"",fullClassName);
             System.exit(1);
         }
+        
         
         // Extracting %n{pattern}
         Pattern tokenPattern = Pattern.compile("%(\\d+)\\{([^}]+)\\}");
         Matcher m = tokenPattern.matcher(srcPattern);
+        
         
         StringBuilder regexBuilder = new StringBuilder();
         int lastEnd = 0;
@@ -108,6 +78,7 @@ public class MultiMover {
         Pattern filePattern = Pattern.compile(regexBuilder.toString());
         
         File dir = new File(sourceDir);
+        
         boolean matched = false;
         if ( dir.listFiles() != null ) {
             for (File f : dir.listFiles()) {
@@ -122,9 +93,11 @@ public class MultiMover {
                     File newFile = new File(targetDir, newName);
                     if ( dryRun ) {
                         System.out.printf("%s : Would move: %s -> %s\n",simpleClassName,f.getPath(),newFile.getPath());
+                        System.out.printf("%s : Would move: %s -> %s\n",simpleClassName,f.getPath(),newFile.getPath());
                     } else {
                         if ( f.renameTo(newFile) ) {
                             if ( verbose ) {
+                                System.out.printf("%s: Moved %s -> %s\n",simpleClassName,f.getPath(),newFile.getPath());
                                 System.out.printf("%s: Moved %s -> %s\n",simpleClassName,f.getPath(),newFile.getPath());
                             }
                         } else {
@@ -159,6 +132,7 @@ public class MultiMover {
         }
     }
     
+    
     private void failedToRename(File f, String newName, File newFile) {
         String errReason = "";
         if ( newFile.exists() ) {
@@ -176,24 +150,43 @@ public class MultiMover {
         }
     }
     
+    
     private void analyzeArgs(String[] args) {
-        for ( String arg : args ) {
-            if ( arg.equals("-d") || arg.equals("--dryrun") ) {
+        for (int i = 0; i < args.length; i++) {
+            String arg = args[i];
+            if (arg.equals("-d") || arg.equals("--dryrun")) {
                 dryRun = true;
-            } else if ( arg.equals("-v") || arg.equals("--verbose") ) {
+            } else if (arg.equals("-v") || arg.equals("--verbose")) {
                 verbose = true;
-            } else if ( arg.equals("-h") || arg.equals("--help") ) {
+            } else if (arg.equals("-h") || arg.equals("--help")) {
                 helpMessage = true;
-            } else if ( arg.startsWith("-") ) {
-                System.out.printf("%s : Error. Unknown Option '%s'\n",simpleClassName,arg);
+            } else if (arg.equals("-s") || arg.equals("--sourcedir")) {
+                if (i + 1 < args.length) {
+                    sourceDir = args[++i];
+                    continue;
+                } else {
+                    System.out.printf("%s : Error. Option '%s' requires an argument.\n", simpleClassName, arg);
+                    System.exit(1);
+                }
+            } else if (arg.equals("-t") || arg.equals("--targetdir")) {
+                if (i + 1 < args.length) {
+                    targetDir = args[++i];
+                    continue;
+                } else {
+                    System.out.printf("%s : Error. Option '%s' requires an argument.\n", simpleClassName, arg);
+                    System.exit(1);
+                }
+            } else if (arg.startsWith("-")) {
+                System.out.printf("%s : Error. Unknown Option '%s'\n", simpleClassName, arg);
                 System.exit(1);
-            } else if ( srcPattern == null ) {
+            } else if (srcPattern == null) {
                 srcPattern = arg;
-            } else if ( dstPattern == null ) {
+            } else if (dstPattern == null) {
                 dstPattern = arg;
             }
         }
     }
+    
     
     private void showHelp(boolean verbose, String simpleClassName, String fullClassName) {
         System.out.printf( "Usage: java %s%s [options] <source-pattern> <destination-pattern>\n",(simpleClassName.equals(fullClassName))?"-jar ":"",fullClassName);
@@ -203,8 +196,15 @@ public class MultiMover {
         System.out.println("  -h, --help       \t: Show this help message.");
         System.out.println("  -s, --sourcedir  \t: Source directory to search for files (default: current directory).");
         System.out.println("  -t, --targetdir  \t: Target directory to move files to (default: current directory).");
+        System.out.println("  -d, --dryrun     \t: Do not actually move files, just show what would be done.");
+        System.out.println("  -v, --verbose    \t: Show verbose output.");
+        System.out.println("  -h, --help       \t: Show this help message.");
+        System.out.println("  -s, --sourcedir  \t: Source directory to search for files (default: current directory).");
+        System.out.println("  -t, --targetdir  \t: Target directory to move files to (default: current directory).");
         System.out.println("Source patterns can use %<n>{pattern} to match and destination pattern can use %<n> which are parts of filenames specified in the source pattern.");
         if ( verbose ) {
+            System.out.printf("\nExample: java %s%s -s sourcedir -t targetdir 'file-%%1{\\d+}.txt' 'renamed-file-%%1.txt'\n",(simpleClassName.equals(fullClassName))?"-jar ":"",fullClassName);
+            System.out.println("\t* This will move files like 'file-123.txt' in sourcedir to 'renamed-file-123.txt' in targetdir.");
             System.out.printf("\nExample: java %s%s -s sourcedir -t targetdir 'file-%%1{\\d+}.txt' 'renamed-file-%%1.txt'\n",(simpleClassName.equals(fullClassName))?"-jar ":"",fullClassName);
             System.out.println("\t* This will move files like 'file-123.txt' in sourcedir to 'renamed-file-123.txt' in targetdir.");
             System.out.println("\t* The %<n>{pattern} syntax allows you to specify a regex pattern to match parts of the filename.");
@@ -212,6 +212,8 @@ public class MultiMover {
             System.out.println("\t* If the source pattern does not match any files, it will print a message and exit.");
             System.out.println("\t* If the source pattern is not valid, it will print an error message and exit.");
             System.out.println("\t* If the destination pattern is not valid, it will print an error message and exit.");
+            System.out.println("\t* If the option '--dryrun' (or '-d') is given, it will show the list of candidate move actions,");
+            System.out.println("\t  so you can check the behavior and correctness of patterns before it actually moves files.");
             System.out.println("\t* If the option '--dryrun' (or '-d') is given, it will show the list of candidate move actions,");
             System.out.println("\t  so you can check the behavior and correctness of patterns before it actually moves files.");
         }
